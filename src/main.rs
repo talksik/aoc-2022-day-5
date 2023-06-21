@@ -194,6 +194,22 @@ fn perform_moves(stacks: &mut Stacks, moves: Vec<Move>) {
     }
 }
 
+// part 2: move batches and retain order
+fn perform_moves_two(stacks: &mut Stacks, moves: Vec<Move>) {
+    for m in moves {
+        let from_stack_crates = stacks.get_mut(&m.from_stack).unwrap();
+        // remove the last m.number_crates from the stack
+        let mut crates_to_move =
+            from_stack_crates.split_off(from_stack_crates.len() - m.number_crates as usize);
+
+        // don't reverse as the crane moves the entire batch
+
+        // add the crates to the to_stack
+        let to_stack_crates = stacks.get_mut(&m.to_stack).unwrap();
+        to_stack_crates.append(&mut crates_to_move);
+    }
+}
+
 // do not use, arbitrary order
 fn get_the_last_one_in_each_stack(stacks: &Stacks) -> Vec<&Crate> {
     let mut last_crates: Vec<&Crate> = Vec::new();
@@ -218,8 +234,14 @@ fn main() {
     println!("before moves: {:?}", stacks);
 
     perform_moves(&mut stacks, moves);
-    get_the_last_one_in_each_stack(&stacks);
-    // QNNTGTPVN
+    //get_the_last_one_in_each_stack(&stacks);
+    // QNNTGTPFN
+
+    let mut part_two_stacks = get_stacks();
+    let moves = read_moves();
+    perform_moves_two(&mut part_two_stacks, moves);
+    get_the_last_one_in_each_stack(&part_two_stacks);
+    // GGNPJBTTR
 }
 
 #[cfg(test)]
